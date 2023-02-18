@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.131.2/build/three.min.js"></script>
+    <script>
+        // create a scene
+        const scene = new THREE.Scene();
+
+        // create a camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 5);
+
+        // create a renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // create a heart shape
+        const heartShape = new THREE.Shape();
+        heartShape.moveTo(0, 0.8);
+        heartShape.quadraticCurveTo(0.5, 1, 0.9, 0.4);
+        heartShape.quadraticCurveTo(1, 0, 0.8, -0.6);
+        heartShape.quadraticCurveTo(0.5, -1, 0, -0.8);
+        heartShape.quadraticCurveTo(-0.5, -1, -0.8, -0.6);
+        heartShape.quadraticCurveTo(-1, 0, -0.9, 0.4);
+        heartShape.quadraticCurveTo(-0.5, 1, 0, 0.8);
+
+        // create an extrude geometry from the heart shape
+        const extrudeSettings = {
+            steps: 2,
+            depth: 0.5,
+            bevelEnabled: true,
+            bevelThickness: 0.1,
+            bevelSize: 0.1,
+            bevelSegments: 2
+        };
+        const geometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+
+        // create a material and mesh for the heart shape
+        const material = new THREE.MeshStandardMaterial({ color: 0xff0000,metalness:1,roughness:0.5 });
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        // create a light and add it to the scene
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(0, 0, 1);
+        scene.add(light);
+
+        // render the scene
+        function animate() {
+            requestAnimationFrame(animate);
+            mesh.rotation.x += 0.01;
+            mesh.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+
+    </script>
+
+</body>
+
+</html>

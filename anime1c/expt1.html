@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.131.2/build/three.min.js"></script>
+    <script>
+        // Create the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create the cubes
+        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const cube1 = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        const cube2 = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube1.position.set(-1, 0, -5);
+        cube2.position.set(1, 0, -5);
+        scene.add(cube1);
+        scene.add(cube2);
+
+        // Set up the collision detection
+        const cubes = [cube1, cube2];
+        const cubeBoundingBoxes = [];
+        for (const cube of cubes) {
+            const boundingBox = new THREE.Box3().setFromObject(cube);
+            cubeBoundingBoxes.push(boundingBox);
+        }
+
+        // Render the scene
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Check for collision
+            for (let i = 0; i < cubes.length; i++) {
+                for (let j = i + 1; j < cubes.length; j++) {
+                    if (cubeBoundingBoxes[i].intersectsBox(cubeBoundingBoxes[j])) {
+                        // Collision detected
+                        cubes[i].material.color.setHex(0x00ff00);
+                        cubes[j].material.color.setHex(0x00ff00);
+                    } else {
+                        // No collision detected
+                        cubes[i].material.color.setHex(0xff0000);
+                        cubes[j].material.color.setHex(0xff0000);
+                    }
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+    </script>
+</body>
+
+</html>
